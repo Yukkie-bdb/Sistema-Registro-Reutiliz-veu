@@ -1,0 +1,223 @@
+﻿@model RegisterModelSimples
+
+<div class="row">
+    <div id="altura"></div>
+    <div class="col-12 rounded shadow">
+        <form id="registerForm" method="post" asp-area="Identity" asp-page="/Account/Register">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+            <div class="d-flex flex-column justify-content-center text-center">
+                <h1>BEM-VINDO!</h1>
+                <h3>Para utilizar 100% de nosso site crie uma conta!</h3>
+            </div>
+
+            <!-- Indicadores de etapa -->
+            <div class="step-indicators d-flex justify-content-center mb-3">
+                <div class="step-circle active"></div>
+                <div class="step-circle"></div>
+                <div class="step-circle"></div>
+            </div>
+
+
+            <!-- Campo Username -->
+            <div class="form-floating my-3" id="step1">
+                <input asp-for="UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="UserName" />
+                <label asp-for="UserName">UserName<span class="text-danger"> *</span></label>
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            <!-- Campo Email -->
+            <div class="form-floating my-3" id="step2" style="display:none;">
+                <input asp-for="Email" class="form-control" autocomplete="email" aria-required="true" placeholder="name@example.com" />
+                <label asp-for="Email">Email<span class="text-danger"> *</span></label>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <!-- Campo Senha e Confirmar Senha -->
+            <div id="step3" style="display:none;">
+                <div class="form-floating mb-3">
+                    <input asp-for="Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" />
+                    <label asp-for="Password">Password<span class="text-danger"> *</span></label>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirm Password" />
+                    <label asp-for="ConfirmPassword">Confirm Password<span class="text-danger"> *</span></label>
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <img src="~/img/default.jpg" class="rounded-circle w-50 shadow" id="imgPerfil" style="display:none;" />
+            </div>
+
+            <!-- Botão de Voltar -->
+            <button id="backButton" type="button" class="w-100 btn btn-lg btn-secondary mb-3" style="display:none;">Voltar</button>
+
+            <!-- Botão de progresso -->
+            <button id="nextButton" type="button" class="w-100 btn btn-lg btn-primary mb-3">Próximo</button>
+
+            <!-- Botão de envio -->
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary mb-3" style="display:none;">Registrar</button>
+
+            <!-- Indicador de carregamento -->
+            <div id="loadingIndicator" class="text-center" style="display:none;">
+                <span>Carregando...</span> <!-- Aqui você pode usar um ícone de carregamento -->
+            </div>
+
+            <!-- Mensagem de Sucesso ou Erro -->
+            <div id="message" class="text-success" style="display:none;"></div>
+            <div id="errorMessage" class="text-danger" style="display:none;"></div>
+
+        </form>
+    </div>
+</div>
+
+<style>
+    .step-indicators {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .step-circle {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: lightgray; /* Cor padrão das bolinhas */
+        margin: 0 5px;
+        transition: background-color 0.3s;
+    }
+
+        .step-circle.active {
+            background-color: #007bff; /* Cor da bolinha ativa (azul escuro) */
+        }
+
+        .step-circle.completed {
+            background-color: #add8e6; /* Azul claro para bolinhas completadas */
+        }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+    <script>
+        let currentStep = 1;
+
+        document.getElementById("nextButton").addEventListener("click", function () {
+            if (currentStep === 1) {
+                document.getElementById("step1").style.display = "none";
+                document.getElementById("step2").style.display = "block";
+                document.getElementById("backButton").style.display = "block"; // Mostrar o botão de voltar
+                currentStep++;
+            updateStepIndicators(); // Atualiza os indicadores de etapa
+
+            } else if (currentStep === 2) {
+                document.getElementById("step2").style.display = "none";
+                document.getElementById("step3").style.display = "block";
+                document.getElementById("nextButton").style.display = "none"; // Esconder o botão de próximo
+                document.getElementById("registerSubmit").style.display = "block"; // Mostrar o botão de registrar
+                currentStep++;
+            updateStepIndicators(); // Atualiza os indicadores de etapa
+
+            }
+        });
+
+        document.getElementById("backButton").addEventListener("click", function () {
+            if (currentStep === 2) {
+                document.getElementById("step2").style.display = "none";
+                document.getElementById("step1").style.display = "block";
+                document.getElementById("backButton").style.display = "none"; // Esconder o botão de voltar
+                document.getElementById("nextButton").style.display = "block"; // Mostrar o botão de próximo
+                document.getElementById("registerSubmit").style.display = "none"; // Esconder o botão de registrar
+                currentStep--; // Atualiza para a etapa 1
+            updateStepIndicators(); // Atualiza os indicadores de etapa
+
+            } else if (currentStep === 3) {
+                document.getElementById("step3").style.display = "none";
+                document.getElementById("step2").style.display = "block";
+                document.getElementById("nextButton").style.display = "block"; // Mostrar o botão de próximo
+                document.getElementById("registerSubmit").style.display = "none"; // Esconder o botão de registrar
+                currentStep--; // Atualiza para a etapa 2
+            updateStepIndicators(); // Atualiza os indicadores de etapa
+
+            }
+        });
+
+    function updateStepIndicators() {
+        const circles = document.querySelectorAll('.step-circle');
+        circles.forEach((circle, index) => {
+            if (index < currentStep - 1) {
+                circle.classList.add('completed'); // Adiciona classe para etapas completadas
+                circle.classList.remove('active');
+            } else if (index === currentStep - 1) {
+                circle.classList.add('active'); // Adiciona classe para a etapa atual
+                circle.classList.remove('completed');
+            } else {
+                circle.classList.remove('active', 'completed'); // Remove todas as classes das etapas futuras
+            }
+        });
+    }
+    </script>
+
+<script>
+    document.getElementById("registerForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // Previne o envio padrão do formulário
+
+        // Oculta todos os elementos do formulário e mostra o carregando
+        document.getElementById("step1").style.display = "none";
+        document.getElementById("step2").style.display = "none";
+        document.getElementById("step3").style.display = "none";
+        document.getElementById("nextButton").style.display = "none";
+        document.getElementById("backButton").style.display = "none";
+        document.getElementById("registerSubmit").style.display = "none";
+        document.getElementById("loadingIndicator").style.display = "block";
+
+        const formData = new FormData(this);
+
+        fetch(this.action, {
+            method: "POST",
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest' // Para indicar que a solicitação é AJAX
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Espera um tempo aleatório entre 1 e 3 segundos
+                const delay = Math.floor(Math.random() * 3000) + 1000; // Entre 1000ms e 3000ms
+                setTimeout(() => {
+                    document.getElementById("loadingIndicator").style.display = "none"; // Oculta carregando
+
+                    if (data.success) {
+                        // Exibe a mensagem de sucesso
+                        document.getElementById("message").innerText = data.message; // Mensagem de sucesso
+                        document.getElementById("message").style.display = "block"; // Mostra a mensagem
+                    } else {
+                        // Exibe erros se houver
+                        document.getElementById("errorMessage").innerText = "Algo deu errado."; // Mensagem de erro
+                        document.getElementById("errorMessage").style.display = "block"; // Mostra a mensagem
+                    }
+
+                    // Espera mais 3 segundos e reseta o formulário
+                    setTimeout(() => {
+                        // Oculta mensagens
+                        document.getElementById("message").style.display = "none";
+                        document.getElementById("errorMessage").style.display = "none";
+
+                        // Volta para a etapa 1
+                        currentStep = 1;
+                        document.getElementById("step1").style.display = "block";
+                        document.getElementById("nextButton").style.display = "block"; // Mostrar o botão de próximo
+                        updateStepIndicators(); // Atualiza os indicadores de etapa
+                    }, 3000); // 3 segundos
+
+                }, delay); // Delay aleatório
+            })
+            .catch(error => {
+                document.getElementById("loadingIndicator").style.display = "none"; // Oculta carregando
+                document.getElementById("errorMessage").innerText = "Ocorreu um erro: " + error.message; // Mensagem de erro
+                document.getElementById("errorMessage").style.display = "block"; // Mostra a mensagem
+            });
+    });
+</script>

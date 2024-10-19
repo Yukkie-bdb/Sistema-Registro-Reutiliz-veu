@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RegisterTest.Data;
+using WebSiteVozesUnidas.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,10 +11,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => { options.SignIn.RequireConfirmedAccount = false; })
+           .AddRoles<IdentityRole<Guid>>()
+           .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -39,5 +40,66 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+using (var scope = app.Services.CreateScope())
+
+{
+    var roleManager =
+    scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+
+    var roles = new[] { "Admin", "Empresa", "PessoaF", "Jornalista" };
+
+    foreach (var role in roles)
+
+    {
+
+        if (!await roleManager.RoleExistsAsync(role))
+            await roleManager.CreateAsync(new IdentityRole<Guid>(role));
+
+    }
+
+}
+
+//using (var scope = app.Services.CreateScope())
+
+//{
+//    var userManager =
+//    scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+//    string email = "admin@gmail.com";
+//    string senha = "Aa@123";
+
+//    if (await userManager.FindByEmailAsync(email) == null)
+//    {
+//        var user = new ApplicationUser();
+//        user.Email = email;
+//        user.UserName = email;
+
+//        await userManager.CreateAsync(user, senha);
+
+//        await userManager.AddToRoleAsync(user, "Admin");
+//    }
+
+//    if (await userManager.FindByEmailAsync("empresa@gmail.com") != null)
+//    {
+//        var user = await userManager.FindByEmailAsync("empresa@gmail.com");
+//        await userManager.AddToRoleAsync(user, "Empresa");
+//    }
+//    if (await userManager.FindByEmailAsync("admin@gmail.com") != null)
+//    {
+//        var user = await userManager.FindByEmailAsync("admin@gmail.com");
+//        await userManager.AddToRoleAsync(user, "Admin");
+//    }
+//    if (await userManager.FindByEmailAsync("usuario@gmail.com") != null)
+//    {
+//        var user = await userManager.FindByEmailAsync("usuario@gmail.com");
+//        await userManager.AddToRoleAsync(user, "PessoaF");
+//    }
+//    if (await userManager.FindByEmailAsync("jornalista@gmail.com") != null)
+//    {
+//        var user = await userManager.FindByEmailAsync("jornalista@gmail.com");
+//        await userManager.AddToRoleAsync(user, "Jornalista");
+//    }
+//}
 
 app.Run();

@@ -290,3 +290,4 @@ C:\Users\Eric\source\repos\RegisterTest\RegisterTest\bin\Debug\net8.0\runtimes\w
 C:\Users\Eric\source\repos\RegisterTest\RegisterTest\bin\Debug\net8.0\runtimes\win-arm64\native\e_sqlite3.dll
 C:\Users\Eric\source\repos\RegisterTest\RegisterTest\bin\Debug\net8.0\runtimes\win-x64\native\e_sqlite3.dll
 C:\Users\Eric\source\repos\RegisterTest\RegisterTest\bin\Debug\net8.0\runtimes\win-x86\native\e_sqlite3.dll
+C:\Users\Eric\source\repos\RegisterTest\RegisterTest\obj\Debug\net8.0\RegisterTest.sourcelink.json

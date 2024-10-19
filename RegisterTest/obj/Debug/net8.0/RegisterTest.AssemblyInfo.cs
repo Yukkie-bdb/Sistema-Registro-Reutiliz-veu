@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RegisterTest")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b1b6ee8fe329a12ef06d32c4386252a859209981")]
 [assembly: System.Reflection.AssemblyProductAttribute("RegisterTest")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RegisterTest")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
